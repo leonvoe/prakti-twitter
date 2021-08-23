@@ -1,11 +1,12 @@
 package com.example.praktitwitter.controller;
 
-import com.example.praktitwitter.model.Gender;
-import com.example.praktitwitter.model.User;
+import com.example.praktitwitter.model.*;
 import com.example.praktitwitter.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -41,13 +42,18 @@ class UserControllerTest {
     ObjectMapper objectMapper;
     @MockBean
     private UserService userService;
-    private Date helperDate;
     private AutoCloseable autoCloseable;
+
+    private Date helperDate;
+    private User user1;
+    private User user2;
 
     @BeforeEach
     void setUp() {
-        helperDate = new Date();
         autoCloseable = MockitoAnnotations.openMocks(this);
+        helperDate = new Date();
+        user1 = new User(1L, "Anna", "Mustermann", "annamus", "pw123", "Biography", helperDate, Gender.FEMALE, null, null);
+        user2 = new User(2L, "Max", "Mustermann", "maxmus", "pw123", "Biography", helperDate, Gender.MALE, null, null);
     }
 
     @AfterEach
@@ -57,21 +63,19 @@ class UserControllerTest {
 
     @Test
     void getAllUsers() throws Exception {
-        User updatedUser = new User(1L, "Anna", "Mustermann", "annamus", "pw123", "Biography", helperDate, Gender.FEMALE, null, null);
-        when(userService.getAllUsers()).thenReturn(List.of(updatedUser));
+        when(userService.getAllUsers()).thenReturn(List.of(user1, user2));
 
         mockMvc.perform(get("/user")
                 .contentType("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
     void getUserById() throws Exception {
-        User updatedUser = new User(1L, "Anna", "Mustermann", "annamus", "pw123", "Biography", helperDate, Gender.FEMALE, null, null);
-        when(userService.getUserById(updatedUser.getId())).thenReturn(updatedUser);
+        when(userService.getUserById(user1.getId())).thenReturn(user1);
 
-        mockMvc.perform(get("/user/{id}", 1L)
+        mockMvc.perform(get("/user/{id}", user1.getId())
                 .contentType("appliction/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
@@ -88,37 +92,33 @@ class UserControllerTest {
 
     @Test
     void insertUser() throws Exception {
-        User user = new User(1L, "Max", "Mustermann", "maxmus", "pw123", "Biography", helperDate, Gender.MALE, null, null);
-
         mockMvc.perform(post("/user")
             .contentType("application/json")
-            .content(objectMapper.writeValueAsString(user)))
+            .content(objectMapper.writeValueAsString(user1)))
             .andExpect(status().isOk());
 
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
         verify(userService).saveUser(userArgumentCaptor.capture());
 
-        assertThat(user).isEqualTo(userArgumentCaptor.getValue());
+        assertThat(user1).isEqualTo(userArgumentCaptor.getValue());
     }
 
     @Test
     void updateUser() throws Exception {
-        User updatedUser = new User(1L, "Anna", "Mustermann", "annamus", "pw123", "Biography", helperDate, Gender.FEMALE, null, null);
-
         mockMvc.perform(put("/user")
         .contentType("application/json")
-        .content(objectMapper.writeValueAsString(updatedUser)))
+        .content(objectMapper.writeValueAsString(user2)))
         .andExpect(status().isOk());
 
         ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
         verify(userService).saveUser(userArgumentCaptor.capture());
 
-        assertThat(updatedUser).isEqualTo(userArgumentCaptor.getValue());
+        assertThat(user2).isEqualTo(userArgumentCaptor.getValue());
     }
 
     @Test
     void deleteUserById() throws Exception {
-        mockMvc.perform(delete("/user/{id}", 1L)
+        mockMvc.perform(delete("/user/{id}", user1.getId())
         .contentType("application/json"))
         .andExpect(status().isOk());
     }
