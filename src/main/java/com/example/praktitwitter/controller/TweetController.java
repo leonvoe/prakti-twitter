@@ -25,6 +25,11 @@ public class TweetController {
         return tweetService.getTweetById(id);
     }
 
+    @GetMapping("/user/{id}")
+    public List<Tweet> getTweetByUserId(@PathVariable Long id) {
+        return tweetService.getTweetByUserId(id);
+    }
+
     @PostMapping
     public void insertTweet(@RequestBody Tweet tweet) {
         tweetService.saveTweet(tweet);

@@ -21,6 +21,10 @@ public class TweetService {
         return tweetRepository.getById(id);
     }
 
+    public List<Tweet> getTweetByUserId(Long id) {
+        return tweetRepository.findTweetByUserId(id);
+    }
+
     public void saveTweet(Tweet tweet) {
         tweetRepository.save(tweet);
     }
