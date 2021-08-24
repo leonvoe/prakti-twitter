@@ -1,6 +1,7 @@
 package com.example.praktitwitter.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class Hashtag {
     @GeneratedValue
     private long id;
     private String name;
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "hashtags")
     private List<Tweet> tweets;
 }
