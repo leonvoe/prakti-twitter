@@ -21,14 +21,17 @@ class TweetRepositoryTest {
     @Autowired
     TweetRepository tweetRepository;
 
+    @Autowired UserRepository userRepository;
+
     @Test
     void findTweetByUserId() {
         User user = new User(1L, "Max", "Mustermann", "maxmus", "pw123", "Biography", new Date(), Gender.MALE, null, null);
-        Tweet tweet = new Tweet(1L, "This is my tweet", user, null, null);
+        Tweet tweet = new Tweet(2L, "This is my tweet", user, null, null);
 
+        userRepository.save(user);
         tweetRepository.save(tweet);
 
-        List<Tweet> foundTweet = tweetRepository.findTweetByUserId(user.getId());
+        Tweet foundTweet = tweetRepository.findTweetByUserId(user.getId()).stream().findFirst().get();
 
         assertThat(foundTweet).isEqualTo(tweet);
     }
