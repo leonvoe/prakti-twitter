@@ -1,8 +1,6 @@
 package com.example.praktitwitter.controller;
 
-import com.example.praktitwitter.model.Hashtag;
 import com.example.praktitwitter.model.User;
-import com.example.praktitwitter.service.HashtagService;
 import com.example.praktitwitter.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

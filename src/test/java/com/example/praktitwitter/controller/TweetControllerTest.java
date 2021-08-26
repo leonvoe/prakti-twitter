@@ -42,8 +42,7 @@ class TweetControllerTest {
     private Tweet tweet1;
     private Tweet tweet2;
     private Comment comment;
-    private Hashtag hashtag1;
-    private Hashtag hashtag2;
+
 
     @BeforeEach
     void setUp() {
@@ -51,10 +50,8 @@ class TweetControllerTest {
         helperDate = new Date();
         user1 = new User(1L, "Anna", "Mustermann", "annamus", "pw123", "Biography", helperDate, Gender.FEMALE, null, null);
         user2 = new User(2L, "Max", "Mustermann", "maxmus", "pw123", "Biography", helperDate, Gender.MALE, null, null);
-        hashtag1 = new Hashtag(1L, "This is a hashtag", null);
-        hashtag2 = new Hashtag(2L, "This is another hashtag", null);
-        tweet1 = new Tweet(1L, "This is a tweet", user1, List.of(hashtag1, hashtag2), null);
-        tweet2 = new Tweet(2L, "This is a tweet", user1, List.of(hashtag2), null);
+        tweet1 = new Tweet(1L, "This is a tweet", user1, "Football", null);
+        tweet2 = new Tweet(2L, "This is a tweet", user1, "Weather", null);
         comment = new Comment(1L, "This is a comment", user2, tweet1);
     }
 
@@ -83,10 +80,7 @@ class TweetControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.text").value("This is a tweet"))
                 .andExpect(jsonPath("$.user.id").value(1))
-                .andExpect(jsonPath("$.hashtags[0].id").value(1))
-                .andExpect(jsonPath("$.hashtags[0].name").value("This is a hashtag"))
-                .andExpect(jsonPath("$.hashtags[1].id").value(2))
-                .andExpect(jsonPath("$.hashtags[1].name").value("This is another hashtag"))
+                .andExpect(jsonPath("$.hashtag").value("Football"))
                 .andExpect(jsonPath("$.comments").doesNotExist());
     }
 

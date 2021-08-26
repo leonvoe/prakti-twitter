@@ -24,13 +24,7 @@ public class Tweet {
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
     private User user;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "tweet_hashtag",
-            joinColumns = @JoinColumn(name = "tweet_id"),
-            inverseJoinColumns = @JoinColumn(name = "hashtag_id")
-    )
-    private List<Hashtag> hashtags;
+    private String hashtag;
     @OneToMany(mappedBy = "tweet")
     private List<Comment> comments;
 }

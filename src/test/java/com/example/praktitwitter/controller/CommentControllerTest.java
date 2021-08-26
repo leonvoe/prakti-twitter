@@ -2,8 +2,6 @@ package com.example.praktitwitter.controller;
 
 import com.example.praktitwitter.model.*;
 import com.example.praktitwitter.service.CommentService;
-import com.example.praktitwitter.service.HashtagService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +18,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -45,8 +42,7 @@ class CommentControllerTest {
     private Tweet tweet2;
     private Comment comment1;
     private Comment comment2;
-    private Hashtag hashtag1;
-    private Hashtag hashtag2;
+
 
     @BeforeEach
     void setUp() {
@@ -54,10 +50,8 @@ class CommentControllerTest {
         helperDate = new Date();
         user1 = new User(1L, "Anna", "Mustermann", "annamus", "pw123", "Biography", helperDate, Gender.FEMALE, null, null);
         user2 = new User(2L, "Max", "Mustermann", "maxmus", "pw123", "Biography", helperDate, Gender.MALE, null, null);
-        hashtag1 = new Hashtag(1L, "This is a hashtag", null);
-        hashtag2 = new Hashtag(2L, "This is another hashtag", null);
-        tweet1 = new Tweet(1L, "This is a tweet", user1, List.of(hashtag1, hashtag2), null);
-        tweet2 = new Tweet(2L, "This is another tweet", user1, List.of(hashtag2), null);
+        tweet1 = new Tweet(1L, "This is a tweet", user1, "Football", null);
+        tweet2 = new Tweet(2L, "This is a tweet", user1, "Weather", null);
         comment1 = new Comment(1L, "This is a comment", user2, tweet1);
         comment2 = new Comment(2L, "This is another comment", user2, tweet2);
 
@@ -100,7 +94,7 @@ class CommentControllerTest {
                 .andExpect(jsonPath("$.tweet.id").value(1))
                 .andExpect(jsonPath("$.tweet.text").value("This is a tweet"))
                 .andExpect(jsonPath("$.tweet.user.id").value(1))
-                .andExpect(jsonPath("$.tweet.hashtags", hasSize(2)));
+                .andExpect(jsonPath("$.tweet.hashtag").value("Football"));
     }
 
     @Test
